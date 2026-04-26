@@ -6,16 +6,16 @@
       <div class="module-panel" v-if="selectedModule && selectedModule !== 'info'">
         <div class="module-wrapper glass-card">
           <SmartDevices v-if="selectedModule === 'devices'" />
-          <div v-if="selectedModule === 'brand'" class="brand-full">
-            <div class="brand-full-title">安芯居 - 品牌总览</div>
-            <div class="brand-full-body">设备在线：12 · 最近连接：门磁、雷达、空气传感器</div>
-          </div>
+          <BrandOverview v-if="selectedModule === 'brand'" />
           <div v-if="selectedModule === 'settings'" class="settings-full">设置面板（占位）</div>
         </div>
       </div>
+
       <div class="stats-row">
         <TopStats />
       </div>
+
+      <!-- 信息中心使用默认主布局（TopStats + 心电图 + 用户卡），因此不渲染单独的 InfoCenter 面板 -->
 
         <div class="middle-section two-col">
           <AnxECG />
@@ -25,6 +25,20 @@
         <AnxRouteMap />
 
         <StatusBar />
+        <div v-if="!selectedModule || selectedModule === 'info'">
+          <div class="stats-row">
+            <TopStats />
+          </div>
+
+          <div class="middle-section two-col">
+            <AnxECG />
+            <UserCard />
+          </div>
+
+          <AnxRouteMap />
+
+          <StatusBar />
+        </div>
     </div>
   </div>
 </template>
@@ -37,10 +51,11 @@ import StatusBar from './StatusBar.vue'
 import AnxECG from './AnxECG.vue'
 import AnxRouteMap from './AnxRouteMap.vue'
 import SmartDevices from './SmartDevices.vue'
+import BrandOverview from './BrandOverview.vue'
 
 export default {
   name: 'AnxDashboard',
-  components: { Sidebar, TopStats, UserCard, StatusBar, AnxECG, AnxRouteMap, SmartDevices },
+  components: { Sidebar, TopStats, UserCard, StatusBar, AnxECG, AnxRouteMap, SmartDevices, BrandOverview },
   data() {
     return { selectedModule: 'info' }
   },
