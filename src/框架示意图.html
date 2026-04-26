@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>安芯居 - 智慧养老看护系统</title>
+    <!-- 引入 ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
+            font-family: 'Inter', 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 24px 32px;
+            color: #eef2ff;
+        }
+
+        /* 毛玻璃卡片通用样式 */
+        .glass-card {
+            background: rgba(18, 25, 45, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 1px solid rgba(72, 120, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(72, 120, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 主布局网格 */
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 顶部指标卡片行 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            padding: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9aa9c7;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .stat-trend {
+            font-size: 0.75rem;
+            margin-top: 10px;
+            color: #6c86a3;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trend-up { color: #ff7b72; }
+        .trend-down { color: #5ee0b0; }
+        .badge { 
+            background: rgba(72, 120, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+
+        /* 中间区域：两列布局 */
+        .middle-section {
+            display: grid;
+            grid-template-columns: 320px 1fr 360px;
+            gap: 24px;
+        }
+
+        /* 左侧用户信息卡 */
+        .user-card {
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #3b6eff, #8b5cf6);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .user-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .user-detail {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 16px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #cbd5e6;
+        }
+
+        .user-detail p {
+            margin: 8px 0;
+        }
+
+        .setting-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .btn-outline {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(72, 120, 255, 0.4);
+            border-radius: 40px;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: default;
+            transition: 0.2s;
+            color: #cddcff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(72, 120, 255, 0.25);
+            border-color: #3b6eff;
+        }
+
+        /* 中部图表区 */
+        .chart-area {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 210px;
+        }
+
+        .risk-box {
+            margin-top: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 12px 16px;
+        }
+
+        .risk-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #b9c8ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 右侧日志流 */
+        .log-panel {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .log-header {
+            font-weight: 600;
+            font-size: 1rem;
+            border-left: 3px solid #3b6eff;
+            padding-left: 12px;
+        }
+
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .log-item {
+            font-size: 0.8rem;
+            font-family: monospace;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .log-time {
+            color: #5b7bc3;
+            min-width: 68px;
+        }
+
+        .log-text {
+            color: #e2e8ff;
+        }
+
+        .log-badge {
+            background: rgba(255, 123, 114, 0.2);
+            color: #ff9f8f;
+            border-radius: 14px;
+            padding: 0px 8px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+
+        /* 底部系统状态栏 */
+        .status-bar {
+            margin-top: 8px;
+            padding: 14px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            background: rgba(8, 14, 26, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            border: 1px solid rgba(72,120,255,0.25);
+        }
+
+        .status-left {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 10px;
+            margin-right: 6px;
+        }
+        .green-dot { background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
+        .blue-dot { background: #3b6eff; }
+
+        .sync-time {
+            color: #7f8fa4;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e2a3a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b6eff;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 1200px) {
+            body { padding: 16px; }
+            .middle-section { grid-template-columns: 1fr; gap: 20px; }
+            .stats-row { gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- 顶部4个核心指标卡片 -->
+    <div class="stats-row">
+        <div class="stat-card glass-card">
+            <div class="stat-title">🏠 摔倒次数</div>
+            <div class="stat-value">3 <span style="font-size: 1.2rem;">次</span></div>
+            <div class="stat-trend"><span class="trend-up">▲ +33%</span> <span class="badge">较上周</span></div>
+        </div>
+        <div class="stat-card glass-card">
+            <div class="stat-title">🛡️ 居家安全评估</div>
+            <div class="stat-value">86<span style="font-size: 1.2rem;"> 分</span></div>
+            <div class="stat-trend">良好 · 综合风险低</div>
+        </div>
+        <div class="stat-card glass-card">
+            <div class="stat-title">🌫️ 空气质量</div>
+            <div class="stat-value">42 <span style="font-size: 1rem;">µg/m³</span></div>
+            <div class="stat-trend">PM2.5 轻度 · 建议通风</div>
+        </div>
+        <div class="stat-card glass-card">
+            <div class="stat-title">🚽 如厕时间 / 频次</div>
+            <div class="stat-value">6 <span style="font-size: 1rem;">次/日均</span></div>
+            <div class="stat-trend">夜间如厕 2 次 · 时长正常</div>
+        </div>
+    </div>
+
+    <!-- 中区布局：用户信息 + 图表区域 + 实时日志 -->
+    <div class="middle-section">
+        <!-- 左侧用户信息及配置区 -->
+        <div class="user-card glass-card">
+            <div class="user-avatar">👵</div>
+            <div class="user-name">张秀英</div>
+            <div class="user-detail">
+                <p>🎂 年龄：78岁</p>
+                <p>🩺 身体状况：高血压、轻度认知障碍、夜间需关注如厕</p>
+                <p>📌 注意事项：跌倒高风险时段 00:00-06:00</p>
+            </div>
+            <div class="setting-buttons">
+                <div class="btn-outline">👤 更改使用者信息</div>
+                <div class="btn-outline">❤️ 心电图设置</div>
+                <div class="btn-outline">🗺️ 路径图设置</div>
+            </div>
+        </div>
+
+        <!-- 中部图表 + 风险图谱区 -->
+        <div class="chart-area glass-card">
+            <div id="trendChart" class="chart-box"></div>
+            <div class="risk-box">
+                <div class="risk-title">
+                    <span>🧬 健康与行为风险图谱</span> 
+                    <span style="font-size:11px;">(雷达图 | 实时维度)</span>
+                </div>
+                <div id="radarChart" style="height: 200px; width: 100%;"></div>
+            </div>
+            <div style="font-size: 0.7rem; text-align: right; color:#5a73a3;">基于毫米波雷达与生物传感器动态建模</div>
+        </div>
+
+        <!-- 右侧系统日志 (类似调度实况) -->
+        <div class="log-panel glass-card">
+            <div class="log-header">📡 系统调度实况 · 实时监测日志</div>
+            <div class="log-list" id="logContainer">
+                <!-- 动态js填充，但保留静态例子保证一致性 -->
+                <div class="log-item"><span class="log-time">[14:32:01]</span><span class="log-text">检测 客厅异常停留 >10分钟 <span class="log-badge">关注</span></span></div>
+                <div class="log-item"><span class="log-time">[14:30:22]</span><span class="log-text">心电图 心率偏快(98bpm) 已提醒家属</span></div>
+                <div class="log-item"><span class="log-time">[14:28:15]</span><span class="log-text">路径图 今日活动路径偏离日常轨迹30%</span></div>
+                <div class="log-item"><span class="log-time">[14:25:00]</span><span class="log-text">如厕 夜间第2次如厕，时长正常</span></div>
+                <div class="log-item"><span class="log-time">[14:20:44]</span><span class="log-text">安全 摔倒风险未触发 · 姿态稳定</span></div>
+                <div class="log-item"><span class="log-time">[14:15:32]</span><span class="log-text">空气质量 PM2.5瞬时值42，建议开启净化</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部状态栏 类似本地服务连接 -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span><span class="status-dot green-dot"></span> 本地数据库：已连接</span>
+            <span><span class="status-dot green-dot"></span> 毫米波雷达：在线</span>
+            <span><span class="status-dot green-dot"></span> 心电图传感器：正常</span>
+            <span><span class="status-dot blue-dot"></span> 路径图引擎：活跃</span>
+        </div>
+        <div class="sync-time">
+            🕒 同步时间：2026-04-21 14:35:22 &nbsp;|&nbsp; 成功拉取高新区居家养老数据
+        </div>
+    </div>
+</div>
+
+<script>
+    // 初始化ECharts折线图（居家安全趋势）
+    const trendChart = echarts.init(document.getElementById('trendChart'));
+    trendChart.setOption({
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, backgroundColor: 'rgba(10,20,40,0.9)', borderColor: '#3b6eff' },
+        grid: { top: 25, left: 45, right: 15, bottom: 20, containLabel: true },
+        xAxis: {
+            type: 'category',
+            data: ['2/10', '2/11', '2/12', '2/13', '2/14', '2/15', '2/16', '2/17'],
+            axisLabel: { color: '#9aa9c7' },
+            axisLine: { lineStyle: { color: '#2a3a60' } }
+        },
+        yAxis: {
+            type: 'value',
+            name: '安全评分',
+            nameTextStyle: { color: '#b9c8ff' },
+            splitLine: { lineStyle: { color: '#1f2a44', type: 'dashed' } },
+            axisLabel: { color: '#cbd5e6' }
+        },
+        series: [{
+            data: [78, 82, 81, 79, 74, 68, 72, 86],
+            type: 'line',
+            smooth: true,
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: { width: 3, color: '#3b6eff', shadowBlur: 12 },
+            areaStyle: { opacity: 0.3, color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#3b6eff' }, { offset: 1, color: '#14223e' }
+            ]) },
+            markPoint: {
+                data: [{ type: 'min', name: '摔倒预警' }],
+                symbolSize: 40,
+                label: { formatter: '⚠️ 低分', color: '#ffaa66' }
+            },
+            itemStyle: { color: '#5d9eff' }
+        }],
+        title: { show: false },
+        backgroundColor: 'transparent'
+    });
+
+    // 雷达图 - 风险图谱（参照宠物保险基因图谱风格，展示五个维度）
+    const radarChart = echarts.init(document.getElementById('radarChart'));
+    radarChart.setOption({
+        radar: {
+            indicator: [
+                { name: '摔倒风险', max: 100 },
+                { name: '夜间如厕频率', max: 100 },
+                { name: '心电图异常趋势', max: 100 },
+                { name: '空气质量影响指数', max: 100 },
+                { name: '路径偏离日常', max: 100 }
+            ],
+            shape: 'circle',
+            center: ['50%', '50%'],
+            radius: '68%',
+            name: { textStyle: { color: '#b9d0ff', fontSize: 10 } },
+            splitArea: { areaStyle: { color: ['rgba(59,110,255,0.1)', 'rgba(35,75,155,0.2)'] } },
+            axisLine: { lineStyle: { color: '#2a4270' } }
+        },
+        series: [{
+            type: 'radar',
+            data: [{ value: [68, 72, 55, 45, 63], name: '当前长者风险' }],
+            areaStyle: { color: 'rgba(59,110,255,0.3)' },
+            lineStyle: { width: 2, color: '#6d9eff' },
+            itemStyle: { color: '#ffb347' }
+        }],
+        tooltip: { trigger: 'item' },
+        backgroundColor: 'transparent'
+    });
+
+    // 模拟实时日志动态追加（类似系统调度实况流，增加动态性）
+    const logContainer = document.getElementById('logContainer');
+    // 初始已有5条，再增加几条更有科技感，模拟实时刷新
+    const extraLogs = [
+        { time: '[14:38:12]', text: '心率变异性分析: 夜间恢复指数偏低', badge: '建议' },
+        { time: '[14:36:47]', text: '路径图 偏离卧室-卫生间常规动线，已标记', badge: '' },
+        { time: '[14:34:02]', text: '空气质量传感器 自动联动新风系统', badge: '已执行' },
+        { time: '[14:33:20]', text: '心电图设置 更新导联灵敏度，重新校准', badge: '' }
+    ];
+    // 追加到现有日志中，保留原有条目
+    function appendLogs() {
+        extraLogs.forEach(log => {
+            const logDiv = document.createElement('div');
+            logDiv.className = 'log-item';
+            const badgeSpan = log.badge ? `<span class="log-badge">${log.badge}</span>` : '';
+            logDiv.innerHTML = `<span class="log-time">${log.time}</span><span class="log-text">${log.text} ${badgeSpan}</span>`;
+            logContainer.appendChild(logDiv);
+        });
+        // 滚动到最新一条
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+    // 延迟1.2秒追加，模拟实时拉取
+    setTimeout(appendLogs, 800);
+
+    // 再定期模拟新事件 (模拟实时告警)
+    let intervalCount = 0;
+    const interval = setInterval(() => {
+        intervalCount++;
+        if (intervalCount > 3) clearInterval(interval); // 只模拟几次，保持简洁
+        const newEvents = [
+            { time: getCurrentSimTime(), text: '毫米波雷达检测到起身动作，如厕计时开始', badge: '实时' },
+            { time: getCurrentSimTime(), text: '算法检测夜间体温略高，建议关注', badge: '风险' }
+        ];
+        const event = newEvents[intervalCount % newEvents.length];
+        if (event && logContainer.children.length < 14) { // 避免太长
+            const newLog = document.createElement('div');
+            newLog.className = 'log-item';
+            newLog.innerHTML = `<span class="log-time">${event.time}</span><span class="log-text">${event.text} <span class="log-badge">${event.badge}</span></span>`;
+            logContainer.appendChild(newLog);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+    }, 4200);
+
+    function getCurrentSimTime() {
+        const d = new Date();
+        return `[${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}]`;
+    }
+
+    // 模拟窗口resize自适应
+    window.addEventListener('resize', () => {
+        trendChart.resize();
+        radarChart.resize();
+    });
+
+    // 增加一些图表动态模拟数据刷新（展示效果，2分钟后更新数值）
+    setTimeout(() => {
+        trendChart.setOption({
+            series: [{
+                data: [80, 83, 85, 82, 79, 73, 78, 88]
+            }]
+        });
+        radarChart.setOption({
+            series: [{
+                data: [{ value: [65, 74, 52, 48, 68] }]
+            }]
+        });
+        // 同时修改顶部统计卡片数字（模拟数据变化，增强交互感）
+        const statValues = document.querySelectorAll('.stat-value');
+        if (statValues[0]) statValues[0].innerHTML = '2 <span style="font-size:1rem;">次</span>';
+        if (statValues[2]) statValues[2].innerHTML = '38 <span style="font-size:1rem;">µg/m³</span>';
+        const trendSpan = document.querySelector('.stat-card:first-child .stat-trend');
+        if (trendSpan) trendSpan.innerHTML = '<span class="trend-down">▼ -2%</span> <span class="badge">较昨日改善</span>';
+    }, 5000);
+</script>
+
+<!-- 确保初始日志中已涵盖如厕/心电图等模块，同时融合安芯居概念图中所有元素：
+     摔倒次数、居家安全评估、空气质量、如厕时间、心电图、路径图、用户信息及修改按钮等。
+     另外在“更改使用者信息”按钮下对应使用者年龄/身体状况展示完整，满足设计要求 -->
+</body>
+</html>
