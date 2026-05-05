@@ -1,12 +1,22 @@
 <template>
-  <div class="info-card big">
+  <div :class="['info-card', big ? 'big' : '']">
     <div class="info-title">信息中心</div>
+    <div class="info-center-body">
+      <AnxECG v-if="!mini" />
+    </div>
   </div>
 </template>
 
 <script>
+import AnxECG from './AnxECG.vue'
+
 export default {
-  name: 'AnxInfoCenter'
+  name: 'AnxInfoCenter',
+  components: { AnxECG },
+  props: {
+    mini: { type: Boolean, default: false },
+    big: { type: Boolean, default: true }
+  }
 }
 </script>
 

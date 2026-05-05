@@ -11,27 +11,21 @@
         </div>
       </div>
 
-      <div class="stats-row">
-        <TopStats />
-      </div>
 
       <!-- 信息中心使用默认主布局（TopStats + 心电图 + 用户卡），因此不渲染单独的 InfoCenter 面板 -->
 
-        <div class="middle-section two-col">
-          <AnxECG />
-          <UserCard />
-        </div>
+        
 
-        <AnxRouteMap />
-
-        <StatusBar />
+        
         <div v-if="!selectedModule || selectedModule === 'info'">
           <div class="stats-row">
             <TopStats />
           </div>
 
-          <div class="middle-section two-col">
-            <AnxECG />
+          <div class="middle-section center-ecg">
+            <div class="center-wrapper">
+              <AnxECG />
+            </div>
             <UserCard />
           </div>
 
@@ -107,6 +101,8 @@ body {
 .middle-section { display:grid; grid-template-columns: 320px 1fr 360px; gap:24px; }
 .middle-section.two-col { grid-template-columns: 1fr 420px; align-items:start }
 .ecg-card { min-height:420px }
+.center-ecg { display:flex; align-items:flex-start; justify-content:center; gap:24px }
+.center-wrapper { width:720px; max-width:72%; display:flex; justify-content:center }
 .route-card { grid-column: 1 / -1 }
 
 /* expanded module panel */

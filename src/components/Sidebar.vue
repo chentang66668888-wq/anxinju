@@ -8,7 +8,7 @@
 
     <div class="top-buttons">
       <div @click="$emit('select','info')" :class="['click-item', {active: selected === 'info'}]">
-        <InfoCenter />
+        <InfoCenter :mini="true" />
       </div>
       <div @click="$emit('select','devices')" :class="['click-item', {active: selected === 'devices'}]">
         <SmartDevices />
