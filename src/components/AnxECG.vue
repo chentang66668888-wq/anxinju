@@ -159,24 +159,24 @@ export default {
       const w = this.width
       const h = this.height
       ctx.clearRect(0, 0, w, h)
-      // paper background (white)
-      ctx.fillStyle = '#fff'
+      // dark blue background (matching the image)
+      ctx.fillStyle = '#0a0f1e'
       ctx.fillRect(0, 0, w, h)
       // grid configuration: fine and major (every 5 fine lines)
       const fine = 8
       const majorEvery = 5
-      // fine grid (red)
-      ctx.strokeStyle = 'rgba(200,70,70,0.45)'
-      ctx.lineWidth = 1
+      // fine grid (dark red/magenta, very subtle)
+      ctx.strokeStyle = 'rgba(120,50,80,0.35)'
+      ctx.lineWidth = 0.5
       for (let x = 0; x < w; x += fine) {
         ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); ctx.stroke()
       }
       for (let y = 0; y < h; y += fine) {
         ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke()
       }
-      // major grid lines (darker red)
-      ctx.strokeStyle = 'rgba(180,50,50,0.7)'
-      ctx.lineWidth = 1.6
+      // major grid lines (darker red, more visible)
+      ctx.strokeStyle = 'rgba(140,60,90,0.5)'
+      ctx.lineWidth = 0.8
       const major = fine * majorEvery
       for (let x = 0; x < w; x += major) {
         ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); ctx.stroke()
@@ -194,12 +194,14 @@ export default {
       // draw waveform centered vertically
       ctx.save()
       ctx.translate(0, h / 2)
-      ctx.beginPath()
       // reduce vertical scale to make peaks less tall and visually denser
       const scaleY = h * 0.14
       const len = this.pattern.length
       // horizontal scaling: samples per pixel so pattern fills width proportionally
       const scaleX = w > 0 ? len / w : 1
+      
+      // draw waveform with light blue/cyan color and glow effect
+      ctx.beginPath()
       for (let x = 0; x < w; x++) {
         const idx = Math.floor((this.offset + x * scaleX) % len)
         const v = this.pattern[idx]
@@ -207,53 +209,30 @@ export default {
         if (x === 0) ctx.moveTo(x, y)
         else ctx.lineTo(x, y)
       }
-      // draw filled area under curve to baseline
+      
+      // add glow effect for the waveform
+      ctx.shadowColor = 'rgba(135,206,250,0.6)'
+      ctx.shadowBlur = 4
+      ctx.lineWidth = 2.5
+      ctx.strokeStyle = '#87CEFA'
       ctx.lineJoin = 'round'
       ctx.lineCap = 'round'
-      ctx.beginPath()
-      for (let x = 0; x < w; x++) {
-        const idx = Math.floor((this.offset + x) % len)
-        const v = this.pattern[idx]
-        const y = -v * scaleY
-        if (x === 0) ctx.moveTo(x, y)
-        else ctx.lineTo(x, y)
-      }
-      // close path to baseline to create fill
-      ctx.lineTo(w, 0)
-      ctx.lineTo(0, 0)
-      ctx.closePath()
-      ctx.fillStyle = 'rgba(0,0,0,0.04)'
-      ctx.fill()
-
-      // draw thick black stroke and a thinner light center to mimic printed ECG line
-      ctx.beginPath()
-      for (let x = 0; x < w; x++) {
-        const idx = Math.floor((this.offset + x) % len)
-        const v = this.pattern[idx]
-        const y = -v * scaleY
-        if (x === 0) ctx.moveTo(x, y)
-        else ctx.lineTo(x, y)
-      }
-      // thinner main stroke to avoid thick-heavy lines
-      ctx.lineWidth = 3.0
-      ctx.strokeStyle = '#000'
-      ctx.shadowColor = 'rgba(0,0,0,0.04)'
-      ctx.shadowBlur = 1
       ctx.stroke()
-      // overlay a slightly thinner light stroke for the inner highlight
-      ctx.beginPath()
-      for (let x = 0; x < w; x++) {
-        const idx = Math.floor((this.offset + x) % len)
-        const v = this.pattern[idx]
-        const y = -v * scaleY
-        if (x === 0) ctx.moveTo(x, y)
-        else ctx.lineTo(x, y)
-      }
-      // subtle inner highlight
-      ctx.lineWidth = 1.2
+      
+      // overlay a thinner, brighter stroke for the core line
       ctx.shadowBlur = 0
-      ctx.strokeStyle = '#dcdcdc'
+      ctx.beginPath()
+      for (let x = 0; x < w; x++) {
+        const idx = Math.floor((this.offset + x * scaleX) % len)
+        const v = this.pattern[idx]
+        const y = -v * scaleY
+        if (x === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
+      }
+      ctx.lineWidth = 1.2
+      ctx.strokeStyle = '#b3e0ff'
       ctx.stroke()
+      
       ctx.restore()
     },
     // generate synthetic ECG-like pattern: create a single beat then tile to length

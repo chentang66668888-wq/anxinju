@@ -1,0 +1,50 @@
+    draw() {
+      const ctx = this.ctx
+      const w = this.width
+      const h = this.height
+      // draw cached grid first (faster than redrawing)
+      if (this.gridCanvas) ctx.drawImage(this.gridCanvas, 0, 0, this.gridCanvas.width, this.gridCanvas.height, 0, 0, w * this.dpr, h * this.dpr)
+      // draw waveform centered vertically
+      ctx.save()
+      ctx.translate(0, h / 2)
+      // reduce vertical scale to make peaks less tall and visually denser
+      const scaleY = h * 0.14
+      const len = this.pattern.length
+      // horizontal scaling: samples per pixel so pattern fills width proportionally
+      const scaleX = w > 0 ? len / w : 1
+      
+      // draw waveform with light blue/cyan color and glow effect
+      ctx.beginPath()
+      for (let x = 0; x < w; x++) {
+        const idx = Math.floor((this.offset + x * scaleX) % len)
+        const v = this.pattern[idx]
+        const y = -v * scaleY
+        if (x === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
+      }
+      
+      // add glow effect for the waveform
+      ctx.shadowColor = 'rgba(135,206,250,0.6)'
+      ctx.shadowBlur = 4
+      ctx.lineWidth = 2.5
+      ctx.strokeStyle = '#87CEFA'
+      ctx.lineJoin = 'round'
+      ctx.lineCap = 'round'
+      ctx.stroke()
+      
+      // overlay a thinner, brighter stroke for the core line
+      ctx.shadowBlur = 0
+      ctx.beginPath()
+      for (let x = 0; x < w; x++) {
+        const idx = Math.floor((this.offset + x * scaleX) % len)
+        const v = this.pattern[idx]
+        const y = -v * scaleY
+        if (x === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
+      }
+      ctx.lineWidth = 1.2
+      ctx.strokeStyle = '#b3e0ff'
+      ctx.stroke()
+      
+      ctx.restore()
+    },
