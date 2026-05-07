@@ -12,7 +12,7 @@
       </div>
 
 
-      <!-- 信息中心使用默认主布局（TopStats + 心电图 + 用户卡），因此不渲染单独的 InfoCenter 面板 -->
+      <!-- 信息中心使用默认主布局（TopStats + 心率图 + 用户卡），因此不渲染单独的 InfoCenter 面板 -->
 
         
 
@@ -98,11 +98,14 @@ body {
 .trend-up { color:#ff7b72; } .trend-down { color:#5ee0b0; }
 .badge { background: rgba(72,120,255,0.2); padding:2px 8px; border-radius:20px; font-size:0.7rem; }
 
-.middle-section { display:grid; grid-template-columns: 320px 1fr 360px; gap:24px; }
-.middle-section.two-col { grid-template-columns: 1fr 420px; align-items:start }
-.ecg-card { min-height:420px }
-.center-ecg { display:flex; align-items:flex-start; justify-content:center; gap:24px }
-.center-wrapper { width:720px; max-width:72%; display:flex; justify-content:center }
+  .middle-section { display:grid; grid-template-columns: 320px 1fr 360px; gap:24px; }
+  .middle-section.two-col { grid-template-columns: 1fr 420px; align-items:start }
+  .ecg-card { min-height:420px }
+  .center-ecg { display:flex; align-items:flex-start; gap:24px }
+  .center-wrapper { flex:1; min-width:0; display:flex }
+  .center-wrapper > * { width:100% }
+  /* ensure user card stays fixed width and aligns to right */
+  .center-ecg .user-card { width:360px; margin-left:auto }
 .route-card { grid-column: 1 / -1 }
 
 /* expanded module panel */

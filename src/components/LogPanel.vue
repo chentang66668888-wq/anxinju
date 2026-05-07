@@ -17,7 +17,7 @@ export default {
     return {
       logs: [
         { time: '[14:32:01]', text: '检测 客厅异常停留 >10分钟', badge: '关注' },
-        { time: '[14:30:22]', text: '心电图 心率偏快(98bpm) 已提醒家属', badge: '' },
+        { time: '[14:30:22]', text: '心率图 心率偏快(98bpm) 已提醒家属', badge: '' },
         { time: '[14:28:15]', text: '路径图 今日活动路径偏离日常轨迹30%', badge: '' },
         { time: '[14:25:00]', text: '如厕 夜间第2次如厕，时长正常', badge: '' },
         { time: '[14:20:44]', text: '安全 摔倒风险未触发 · 姿态稳定', badge: '' },
@@ -27,7 +27,7 @@ export default {
         { text: '心率变异性分析: 夜间恢复指数偏低', badge: '建议' },
         { text: '路径图 偏离卧室-卫生间常规动线，已标记', badge: '' },
         { text: '空气质量传感器 自动联动新风系统', badge: '已执行' },
-        { text: '心电图设置 更新导联灵敏度，重新校准', badge: '' }
+        { text: '心率图设置 更新导联灵敏度，重新校准', badge: '' }
       ],
       intervalId: null,
       intervalCount: 0

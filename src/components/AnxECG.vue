@@ -10,6 +10,12 @@
 <script>
 export default {
   name: 'AnxECG',
+  props: {
+    // speed in pixels per second (controls scroll velocity)
+    // default scrolling speed (pixels per second)
+    // 增大速度以避免波形过于密集
+    speed: { type: Number, default: 80 }
+  },
   data() {
     return {
       ctx: null,
@@ -31,7 +37,8 @@ export default {
     // try load CSV data from public folder; fallback to synthetic
     this.loadCSV().then(ok => {
       if (ok) {
-        this.pattern = this.createPatternFromCSV(4000)
+        // use the CSV's native sample count to preserve real spacing
+        this.pattern = this.createPatternFromCSV(this.csvValues.length)
       } else {
         this.pattern = this.generateECGPattern(4000)
         // regenerate synthetic pattern every minute
@@ -91,7 +98,7 @@ export default {
         const dt = t - this.lastTime
         this.lastTime = t
         // scroll speed in pixels per second
-        const speed = 40
+        const speed = this.speed
         // compute horizontal scale (samples per pixel)
         const len = this.pattern ? this.pattern.length : 1
         const scaleX = this.width > 0 ? len / this.width : 1
@@ -188,7 +195,8 @@ export default {
       ctx.save()
       ctx.translate(0, h / 2)
       ctx.beginPath()
-      const scaleY = h * 0.22
+      // reduce vertical scale to make peaks less tall and visually denser
+      const scaleY = h * 0.14
       const len = this.pattern.length
       // horizontal scaling: samples per pixel so pattern fills width proportionally
       const scaleX = w > 0 ? len / w : 1
@@ -226,10 +234,11 @@ export default {
         if (x === 0) ctx.moveTo(x, y)
         else ctx.lineTo(x, y)
       }
-      ctx.lineWidth = 6.0
+      // thinner main stroke to avoid thick-heavy lines
+      ctx.lineWidth = 3.0
       ctx.strokeStyle = '#000'
-      ctx.shadowColor = 'rgba(0,0,0,0.08)'
-      ctx.shadowBlur = 2
+      ctx.shadowColor = 'rgba(0,0,0,0.04)'
+      ctx.shadowBlur = 1
       ctx.stroke()
       // overlay a slightly thinner light stroke for the inner highlight
       ctx.beginPath()
@@ -240,7 +249,8 @@ export default {
         if (x === 0) ctx.moveTo(x, y)
         else ctx.lineTo(x, y)
       }
-      ctx.lineWidth = 2.0
+      // subtle inner highlight
+      ctx.lineWidth = 1.2
       ctx.shadowBlur = 0
       ctx.strokeStyle = '#dcdcdc'
       ctx.stroke()
