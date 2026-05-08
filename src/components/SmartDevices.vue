@@ -109,44 +109,68 @@ export default {
 
 <style scoped>
 .device-card {
-  padding: 24px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  background: linear-gradient(135deg, rgba(59, 110, 255, 0.1), rgba(139, 92, 246, 0.1));
+  border-radius: 24px;
+  border: 1px solid rgba(59, 110, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+.device-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(59, 110, 255, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.device-card:hover::before {
+  opacity: 1;
 }
 
 .device-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .device-title {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #dfe8ff;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .device-summary {
   display: flex;
-  gap: 16px;
+  gap: 20px;
 }
 
 .summary-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
+  gap: 8px;
+  font-size: 0.9rem;
   color: #9fb4ff;
+  font-weight: 500;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
 }
 
 .green-dot {
@@ -179,20 +203,37 @@ export default {
 }
 
 .device-item {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(72, 120, 255, 0.15);
-  border-radius: 12px;
-  padding: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(72, 120, 255, 0.2);
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
-  transition: all 0.2s ease;
+  gap: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
-
+.device-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(72, 120, 255, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.device-item:hover::before {
+  opacity: 1;
+}
 .device-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(72, 120, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border-color: rgba(72, 120, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 110, 255, 0.15);
 }
 
 .device-info {
@@ -224,24 +265,27 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  min-width: 100px;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  min-width: 110px;
+  transition: all 0.3s ease;
 }
 
 .device-status.online {
-  background: rgba(46, 204, 113, 0.15);
-  border: 1px solid rgba(46, 204, 113, 0.3);
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2));
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
 }
 
 .device-status.offline {
-  background: rgba(231, 76, 60, 0.15);
-  border: 1px solid rgba(231, 76, 60, 0.3);
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.2));
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
 }
 
 .status-icon {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
 }
 
@@ -254,8 +298,8 @@ export default {
 }
 
 .status-text {
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .device-status.online .status-text {

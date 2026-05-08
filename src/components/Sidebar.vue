@@ -44,38 +44,115 @@ export default {
   min-height: 600px;
   display: flex;
   flex-direction: column;
+  padding: 16px;
+  gap: 16px;
+  background: linear-gradient(180deg, rgba(18, 25, 45, 0.8), rgba(8, 14, 26, 0.8));
+  border-radius: 20px;
+  border: 1px solid rgba(72, 120, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+.click-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.click-item:hover {
+  transform: translateY(-3px);
+}
+.brand-overview {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.brand-overview.active,
+.click-item.active {
+  box-shadow: 0 8px 24px rgba(59, 110, 255, 0.15);
+  border: 1px solid rgba(59, 110, 255, 0.2);
+  background: linear-gradient(135deg, rgba(59, 110, 255, 0.1), rgba(139, 92, 246, 0.1));
+}
+.brand-overview {
   padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  text-align: center;
+  border-radius: 16px;
+}
+.brand-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3b6eff, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-shadow: 0 6px 16px rgba(59, 110, 255, 0.3);
+}
+.brand-name {
+  font-size: 0.9rem;
+  color: #eaf0ff;
+  font-weight: 600;
+}
+.brand-sub {
+  font-size: 0.75rem;
+  color: #96a9d6;
+}
+.top-buttons {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
-.click-item { cursor:pointer }
-.click-item:hover { transform: translateY(-2px); }
-.brand-overview { cursor:pointer }
-.brand-overview.active, .click-item.active { box-shadow: 0 6px 20px rgba(59,110,255,0.08); border:1px solid rgba(59,110,255,0.08) }
-.brand-overview { padding:10px; display:flex; flex-direction:column; gap:6px; align-items:center; text-align:center }
-.brand-logo { width:56px; height:56px; border-radius:10px; background: linear-gradient(135deg,#3b6eff,#8b5cf6); display:flex; align-items:center; justify-content:center; color:white; font-weight:700 }
-.brand-name { font-size:0.85rem; color:#eaf0ff; font-weight:600 }
-.brand-sub { font-size:0.7rem; color:#96a9d6 }
-.top-buttons { display:flex; flex-direction:column; gap:12px; }
-.spacer { flex: 1 1 auto; }
-.setting-btn { width:100%; }
+.spacer {
+  flex: 1 1 auto;
+}
+.setting-btn {
+  width: 100%;
+  transition: all 0.3s ease;
+}
+.setting-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 110, 255, 0.2);
+}
 
 /* 智能设备按钮样式 */
 .sidebar-device-btn {
-  padding: 10px 6px;
+  padding: 12px 8px;
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #cddcff;
-  background: rgba(255,255,255,0.03);
-  border-radius: 8px;
-  transition: all 0.2s;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(72, 120, 255, 0.1);
 }
 
 /* reuse existing outline button style */
-.btn-outline { background: rgba(255,255,255,0.03); border:1px solid rgba(72,120,255,0.15); border-radius:8px; padding:8px 6px; text-align:center; font-size:0.85rem; color:#cddcff; cursor:default }
+.btn-outline {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(72, 120, 255, 0.2);
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #cddcff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
 
-.glass-card { background: rgba(18, 25, 45, 0.65); backdrop-filter: blur(8px); border-radius:12px; border:1px solid rgba(72,120,255,0.06); }
+.glass-card {
+  background: rgba(18, 25, 45, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(72, 120, 255, 0.15);
+}
 
-.setting-btn:hover { background: rgba(72,120,255,0.08); }
+.setting-btn:hover {
+  background: linear-gradient(135deg, rgba(72, 120, 255, 0.2), rgba(139, 92, 246, 0.2));
+  border-color: rgba(72, 120, 255, 0.4);
+}
 
 </style>
