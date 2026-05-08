@@ -209,41 +209,77 @@ export default {
     drawGridTo(ctx) {
       const w = this.width
       const h = this.height
+      
+      // 清除画布
       ctx.clearRect(0, 0, w, h)
+      
+      // 填充背景色
       const bgColor = this.getBackgroundColor()
       ctx.fillStyle = bgColor
       ctx.fillRect(0, 0, w, h)
       
+      // 获取网格颜色
       const gridColors = this.getGridColors()
       const fine = 8
       const majorEvery = 5
       
+      // 绘制细网格线
       ctx.strokeStyle = gridColors.fine
       ctx.lineWidth = 0.5
       for (let x = 0; x < w; x += fine) {
-        ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(x + 0.5, 0)
+        ctx.lineTo(x + 0.5, h)
+        ctx.stroke()
       }
       for (let y = 0; y < h; y += fine) {
-        ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(0, y + 0.5)
+        ctx.lineTo(w, y + 0.5)
+        ctx.stroke()
       }
       
+      // 绘制粗网格线
       ctx.strokeStyle = gridColors.major
       ctx.lineWidth = 0.8
       const major = fine * majorEvery
       for (let x = 0; x < w; x += major) {
-        ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(x + 0.5, 0)
+        ctx.lineTo(x + 0.5, h)
+        ctx.stroke()
       }
       for (let y = 0; y < h; y += major) {
-        ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke()
+        ctx.beginPath()
+        ctx.moveTo(0, y + 0.5)
+        ctx.lineTo(w, y + 0.5)
+        ctx.stroke()
       }
     },
     draw() {
       const ctx = this.ctx
       const w = this.width
       const h = this.height
-      if (this.gridCanvas) ctx.drawImage(this.gridCanvas, 0, 0, this.gridCanvas.width, this.gridCanvas.height, 0, 0, w * this.dpr, h * this.dpr)
+      
+      // 清除整个画布（使用设备像素坐标）
+      ctx.save()
+      ctx.setTransform(1, 0, 0, 1, 0, 0) // 重置变换矩阵到单位矩阵
+      ctx.clearRect(0, 0, w * this.dpr, h * this.dpr)
+      ctx.restore()
+      
+      // 绘制网格背景
+      if (this.gridCanvas) {
+        ctx.save()
+        ctx.setTransform(1, 0, 0, 1, 0, 0)
+        ctx.drawImage(this.gridCanvas, 0, 0, w * this.dpr, h * this.dpr, 0, 0, w * this.dpr, h * this.dpr)
+        ctx.restore()
+      }
       
       ctx.save()
+      // 应用设备像素比变换
+      ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
+      
+      // 垂直居中
       ctx.translate(0, h / 2)
       const scaleY = h * 0.14
       const len = this.pattern.length
@@ -251,6 +287,7 @@ export default {
       
       const waveColor = this.getWaveColor()
       
+      // 绘制主波形（带发光效果）
       ctx.beginPath()
       for (let x = 0; x < w; x++) {
         const idx = Math.floor((this.offset + x * scaleX) % len)
@@ -268,6 +305,7 @@ export default {
       ctx.lineCap = 'round'
       ctx.stroke()
       
+      // 绘制高亮波形（无发光）
       ctx.shadowBlur = 0
       ctx.beginPath()
       for (let x = 0; x < w; x++) {

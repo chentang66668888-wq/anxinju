@@ -1,38 +1,45 @@
 <template>
-  <div class="dashboard app-layout">
-    <Sidebar @select="onSidebarSelect" :selected="selectedModule" />
+  <div class="dashboard">
+    <div class="logout-bar">
+      <span class="user-info">👤 {{ currentUser }}</span>
+      <button class="btn-logout" @click="handleLogout">退出登录</button>
+    </div>
+    
+    <div class="app-layout">
+      <Sidebar @select="onSidebarSelect" :selected="selectedModule" />
 
-    <div class="main-area">
-      <div class="module-panel" v-if="selectedModule && selectedModule !== 'info'">
-        <div class="module-wrapper glass-card">
-          <SmartDevices v-if="selectedModule === 'devices'" />
-          <BrandOverview v-if="selectedModule === 'brand'" />
-          <div v-if="selectedModule === 'settings'" class="settings-full">设置面板（占位）</div>
-        </div>
-      </div>
-
-      <!-- 信息中心使用默认主布局（TopStats + 心率图 + 用户卡），因此不渲染单独的 InfoCenter 面板 -->
-
-      <div v-if="!selectedModule || selectedModule === 'info'">
-        <div class="stats-row">
-          <TopStats />
-        </div>
-
-        <div class="middle-section center-ecg">
-          <div class="center-wrapper">
-            <AnxECG ref="ecgComponent" :ecg-settings="ecgSettings" />
+      <div class="main-area">
+        <div class="module-panel" v-if="selectedModule && selectedModule !== 'info'">
+          <div class="module-wrapper glass-card">
+            <SmartDevices v-if="selectedModule === 'devices'" />
+            <BrandOverview v-if="selectedModule === 'brand'" />
+            <div v-if="selectedModule === 'settings'" class="settings-full">设置面板（占位）</div>
           </div>
-          <UserCard 
-            @update-user-info="handleUserInfoUpdate"
-            @update-ecg-settings="handleECGSettingsUpdate"
-            @update-route-settings="handleRouteSettingsUpdate"
-            @export-ecg-data="handleExportECGData"
-          />
         </div>
 
-        <AnxRouteMap :route-settings="routeSettings" />
+        <!-- 信息中心使用默认主布局（TopStats + 心率图 + 用户卡），因此不渲染单独的 InfoCenter 面板 -->
 
-        <StatusBar />
+        <div v-if="!selectedModule || selectedModule === 'info'">
+          <div class="stats-row">
+            <TopStats />
+          </div>
+
+          <div class="middle-section center-ecg">
+            <div class="center-wrapper">
+              <AnxECG ref="ecgComponent" :ecg-settings="ecgSettings" />
+            </div>
+            <UserCard 
+              @update-user-info="handleUserInfoUpdate"
+              @update-ecg-settings="handleECGSettingsUpdate"
+              @update-route-settings="handleRouteSettingsUpdate"
+              @export-ecg-data="handleExportECGData"
+            />
+          </div>
+
+          <AnxRouteMap :route-settings="routeSettings" />
+
+          <StatusBar />
+        </div>
       </div>
     </div>
   </div>
@@ -69,7 +76,8 @@ export default {
         name: '张德海',
         age: 78,
         healthCondition: '高血压、轻度认知障碍、夜间需关注如厕'
-      }
+      },
+      currentUser: localStorage.getItem('anxju_current_user') || '用户'
     }
   },
   methods: {
@@ -94,6 +102,13 @@ export default {
         this.$refs.ecgComponent.exportData()
       }
       console.log('导出心电图数据')
+    },
+    handleLogout() {
+      // 清除登录状态
+      localStorage.removeItem('anxju_logged_in')
+      localStorage.removeItem('anxju_current_user')
+      // 触发退出登录事件
+      this.$emit('logout')
     }
   }
 }
@@ -125,6 +140,11 @@ body {
 .glass-card:hover { border-color: rgba(72, 120, 255, 0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
 
 .dashboard { max-width: 1600px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.logout-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: rgba(18, 25, 45, 0.6); backdrop-filter: blur(10px); border-radius: 16px; border: 1px solid rgba(72, 120, 255, 0.2); }
+.user-info { font-size: 0.9rem; color: #eef2ff; font-weight: 500; }
+.btn-logout { background: rgba(255, 123, 114, 0.15); border: 1px solid rgba(255, 123, 114, 0.4); color: #ff9f8f; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+.btn-logout:hover { background: rgba(255, 123, 114, 0.3); border-color: #ff7b72; color: #fff; }
+
 .app-layout { display: grid; grid-template-columns: 120px 1fr; gap: 24px; align-items: start; }
 .main-area { display: flex; flex-direction: column; gap: 24px; }
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
