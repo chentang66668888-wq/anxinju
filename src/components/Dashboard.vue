@@ -11,28 +11,29 @@
         </div>
       </div>
 
-
       <!-- 信息中心使用默认主布局（TopStats + 心率图 + 用户卡），因此不渲染单独的 InfoCenter 面板 -->
 
-        
-
-        
-        <div v-if="!selectedModule || selectedModule === 'info'">
-          <div class="stats-row">
-            <TopStats />
-          </div>
-
-          <div class="middle-section center-ecg">
-            <div class="center-wrapper">
-              <AnxECG />
-            </div>
-            <UserCard />
-          </div>
-
-          <AnxRouteMap />
-
-          <StatusBar />
+      <div v-if="!selectedModule || selectedModule === 'info'">
+        <div class="stats-row">
+          <TopStats />
         </div>
+
+        <div class="middle-section center-ecg">
+          <div class="center-wrapper">
+            <AnxECG ref="ecgComponent" :ecg-settings="ecgSettings" />
+          </div>
+          <UserCard 
+            @update-user-info="handleUserInfoUpdate"
+            @update-ecg-settings="handleECGSettingsUpdate"
+            @update-route-settings="handleRouteSettingsUpdate"
+            @export-ecg-data="handleExportECGData"
+          />
+        </div>
+
+        <AnxRouteMap :route-settings="routeSettings" />
+
+        <StatusBar />
+      </div>
     </div>
   </div>
 </template>
@@ -51,16 +52,52 @@ export default {
   name: 'AnxDashboard',
   components: { Sidebar, TopStats, UserCard, StatusBar, AnxECG, AnxRouteMap, SmartDevices, BrandOverview },
   data() {
-    return { selectedModule: 'info' }
+    return { 
+      selectedModule: 'info',
+      ecgSettings: {
+        bgColor: 'dark',
+        showData: false,
+        waveColor: 'lightblue'
+      },
+      routeSettings: {
+        showLabels: true,
+        showRivers: true,
+        showRoads: true,
+        routeColor: 'cyan'
+      },
+      userInfo: {
+        name: '张德海',
+        age: 78,
+        healthCondition: '高血压、轻度认知障碍、夜间需关注如厕'
+      }
+    }
   },
   methods: {
     onSidebarSelect(key) {
       this.selectedModule = this.selectedModule === key ? null : key
+    },
+    handleUserInfoUpdate(userInfo) {
+      this.userInfo = { ...userInfo }
+      // 可以在这里将用户信息保存到 localStorage 或发送到后端
+      console.log('用户信息已更新:', this.userInfo)
+    },
+    handleECGSettingsUpdate(ecgSettings) {
+      this.ecgSettings = { ...ecgSettings }
+      console.log('心电图设置已更新:', this.ecgSettings)
+    },
+    handleRouteSettingsUpdate(routeSettings) {
+      this.routeSettings = { ...routeSettings }
+      console.log('路线图设置已更新:', this.routeSettings)
+    },
+    handleExportECGData() {
+      if (this.$refs.ecgComponent) {
+        this.$refs.ecgComponent.exportData()
+      }
+      console.log('导出心电图数据')
     }
   }
 }
 </script>
-
 
 <style>
 /* ====== 全局布局与组件样式（来自示意图） ====== */
@@ -119,7 +156,7 @@ body {
 .user-name { font-size:1.6rem; font-weight:600; }
 .user-detail { border-top:1px solid rgba(255,255,255,0.1); padding-top:16px; font-size:0.85rem; line-height:1.5; color:#cbd5e6; }
 .setting-buttons { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
-.btn-outline { background: rgba(255,255,255,0.05); border:1px solid rgba(72,120,255,0.4); border-radius:40px; padding:10px 0; text-align:center; font-size:0.85rem; font-weight:500; cursor:default; transition:0.2s; color:#cddcff; }
+.btn-outline { background: rgba(255,255,255,0.05); border:1px solid rgba(72,120,255,0.4); border-radius:40px; padding:10px 0; text-align:center; font-size:0.85rem; font-weight:500; cursor:pointer; transition:0.2s; color:#cddcff; }
 .btn-outline:hover { background: rgba(72,120,255,0.25); border-color: #3b6eff }
 
 .chart-area { padding:20px; display:flex; flex-direction:column; gap:24px; }
@@ -150,5 +187,4 @@ body {
   .middle-section { grid-template-columns:1fr; gap:20px; }
   .stats-row { gap:16px; }
 }
-
 </style>

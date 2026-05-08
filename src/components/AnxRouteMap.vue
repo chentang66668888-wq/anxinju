@@ -10,6 +10,17 @@
 <script>
 export default {
   name: 'AnxRouteMap',
+  props: {
+    routeSettings: {
+      type: Object,
+      default: () => ({
+        showLabels: true,
+        showRivers: true,
+        showRoads: true,
+        routeColor: 'cyan'
+      })
+    }
+  },
   data() {
     return {
       ctx: null,
@@ -18,6 +29,14 @@ export default {
       dpr: 1,
       routeData: null,
       resizeTimer: null
+    }
+  },
+  watch: {
+    routeSettings: {
+      deep: true,
+      handler() {
+        this.draw()
+      }
     }
   },
   mounted() {
@@ -30,6 +49,15 @@ export default {
     window.removeEventListener('resize', this.onResize)
   },
   methods: {
+    getRouteColor() {
+      const colors = {
+        cyan: { main: '#4ecdc4', glow: 'rgba(78, 205, 196, 0.4)' },
+        blue: { main: '#3b6eff', glow: 'rgba(59, 110, 255, 0.4)' },
+        red: { main: '#e74c3c', glow: 'rgba(231, 76, 60, 0.4)' },
+        yellow: { main: '#f39c12', glow: 'rgba(243, 156, 18, 0.4)' }
+      }
+      return colors[this.routeSettings.routeColor] || colors.cyan
+    },
     setupCanvas() {
       const canvas = this.$refs.canvas
       this.dpr = window.devicePixelRatio || 1
@@ -99,11 +127,15 @@ export default {
       ctx.fillStyle = '#f8f6f0'
       ctx.fillRect(0, 0, w, h)
       
-      // 绘制河流
-      this.drawRivers(ctx, w, h)
+      // 绘制河流（如果开启）
+      if (this.routeSettings.showRivers) {
+        this.drawRivers(ctx, w, h)
+      }
       
-      // 绘制道路网格
-      this.drawRoads(ctx, w, h)
+      // 绘制道路网格（如果开启）
+      if (this.routeSettings.showRoads) {
+        this.drawRoads(ctx, w, h)
+      }
       
       // 绘制路线
       this.drawRoute(ctx, w, h)
@@ -111,8 +143,10 @@ export default {
       // 绘制终点标记
       this.drawEndMarker(ctx, w, h)
       
-      // 绘制标签
-      this.drawLabels(ctx, w, h)
+      // 绘制标签（如果开启）
+      if (this.routeSettings.showLabels) {
+        this.drawLabels(ctx, w, h)
+      }
     },
     drawRivers(ctx, w, h) {
       ctx.strokeStyle = 'rgba(180, 210, 240, 0.6)'
@@ -153,12 +187,14 @@ export default {
       })
     },
     drawRoute(ctx, w, h) {
-      // 绘制路线（青绿色）
-      ctx.strokeStyle = '#4ecdc4'
+      const routeColor = this.getRouteColor()
+      
+      // 绘制路线
+      ctx.strokeStyle = routeColor.main
       ctx.lineWidth = 10
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
-      ctx.shadowColor = 'rgba(78, 205, 196, 0.4)'
+      ctx.shadowColor = routeColor.glow
       ctx.shadowBlur = 8
       
       ctx.beginPath()

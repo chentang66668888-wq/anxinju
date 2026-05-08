@@ -11,7 +11,7 @@
         <InfoCenter :mini="true" />
       </div>
       <div @click="$emit('select','devices')" :class="['click-item', {active: selected === 'devices'}]">
-        <SmartDevices />
+        <div class="sidebar-device-btn">智能设备</div>
       </div>
     </div>
 
@@ -25,11 +25,16 @@
 
 <script>
 import InfoCenter from './InfoCenter.vue'
-import SmartDevices from './SmartDevices.vue'
 
 export default {
   name: 'AnxSidebar',
-  components: { InfoCenter, SmartDevices }
+  components: { InfoCenter },
+  props: {
+    selected: {
+      type: String,
+      default: 'info'
+    }
+  }
 }
 </script>
 
@@ -53,6 +58,18 @@ export default {
 .top-buttons { display:flex; flex-direction:column; gap:12px; }
 .spacer { flex: 1 1 auto; }
 .setting-btn { width:100%; }
+
+/* 智能设备按钮样式 */
+.sidebar-device-btn {
+  padding: 10px 6px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #cddcff;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
 
 /* reuse existing outline button style */
 .btn-outline { background: rgba(255,255,255,0.03); border:1px solid rgba(72,120,255,0.15); border-radius:8px; padding:8px 6px; text-align:center; font-size:0.85rem; color:#cddcff; cursor:default }

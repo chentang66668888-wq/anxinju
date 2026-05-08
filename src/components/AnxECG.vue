@@ -1,8 +1,12 @@
 <template>
   <div class="ecg-card glass-card">
     <div class="ecg-title">心电图</div>
-    <div class="ecg-plot">
+    <div class="ecg-plot" :style="{ background: getBgColor() }">
       <canvas ref="canvas" class="ecg-canvas"></canvas>
+      <div v-if="ecgSettings.showData" class="ecg-data-display">
+        <div class="data-item">心率: {{ heartRate }} BPM</div>
+        <div class="data-item">电压: {{ currentVoltage }} mV</div>
+      </div>
     </div>
   </div>
 </template>
@@ -11,10 +15,15 @@
 export default {
   name: 'AnxECG',
   props: {
-    // speed in pixels per second (controls scroll velocity)
-    // default scrolling speed (pixels per second)
-    // 增大速度以避免波形过于密集
-    speed: { type: Number, default: 80 }
+    speed: { type: Number, default: 80 },
+    ecgSettings: {
+      type: Object,
+      default: () => ({
+        bgColor: 'dark',
+        showData: false,
+        waveColor: 'lightblue'
+      })
+    }
   },
   data() {
     return {
@@ -29,19 +38,26 @@ export default {
       animationId: null,
       offset: 0,
       lastTime: 0,
-      regenTimer: null
+      regenTimer: null,
+      heartRate: 72,
+      currentVoltage: 0
+    }
+  },
+  watch: {
+    ecgSettings: {
+      deep: true,
+      handler() {
+        this.updateDisplay()
+      }
     }
   },
   mounted() {
     this.setupCanvas()
-    // try load CSV data from public folder; fallback to synthetic
     this.loadCSV().then(ok => {
       if (ok) {
-        // use the CSV's native sample count to preserve real spacing
         this.pattern = this.createPatternFromCSV(this.csvValues.length)
       } else {
         this.pattern = this.generateECGPattern(4000)
-        // regenerate synthetic pattern every minute
         this.regenTimer = setInterval(() => {
           this.pattern = this.generateECGPattern(4000)
         }, 60 * 1000)
@@ -57,6 +73,41 @@ export default {
     window.removeEventListener('resize', this.onResize)
   },
   methods: {
+    getBgColor() {
+      const colors = {
+        dark: 'linear-gradient(180deg, rgba(10,18,35,0.12), rgba(5,10,20,0.06))',
+        black: 'linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.06))',
+        white: 'linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06))',
+        green: 'linear-gradient(180deg, rgba(0,30,0,0.12), rgba(0,20,0,0.06))'
+      }
+      return colors[this.ecgSettings.bgColor] || colors.dark
+    },
+    getBackgroundColor() {
+      const colors = {
+        dark: '#0a0f1e',
+        black: '#000000',
+        white: '#ffffff',
+        green: '#001400'
+      }
+      return colors[this.ecgSettings.bgColor] || colors.dark
+    },
+    getWaveColor() {
+      const colors = {
+        lightblue: { main: '#87CEFA', glow: 'rgba(135,206,250,0.6)', bright: '#b3e0ff' },
+        green: { main: '#2ecc71', glow: 'rgba(46,204,113,0.6)', bright: '#5ee0b0' },
+        red: { main: '#e74c3c', glow: 'rgba(231,76,60,0.6)', bright: '#ff6b6b' },
+        white: { main: '#ffffff', glow: 'rgba(255,255,255,0.6)', bright: '#f0f0f0' }
+      }
+      return colors[this.ecgSettings.waveColor] || colors.lightblue
+    },
+    getGridColors() {
+      if (this.ecgSettings.bgColor === 'white') {
+        return { fine: 'rgba(200,70,70,0.45)', major: 'rgba(180,50,50,0.7)' }
+      } else if (this.ecgSettings.bgColor === 'green') {
+        return { fine: 'rgba(0,100,0,0.35)', major: 'rgba(0,120,0,0.5)' }
+      }
+      return { fine: 'rgba(120,50,80,0.35)', major: 'rgba(140,60,90,0.5)' }
+    },
     setupCanvas() {
       const canvas = this.$refs.canvas
       this.dpr = window.devicePixelRatio || 1
@@ -159,14 +210,15 @@ export default {
       const w = this.width
       const h = this.height
       ctx.clearRect(0, 0, w, h)
-      // dark blue background (matching the image)
-      ctx.fillStyle = '#0a0f1e'
+      const bgColor = this.getBackgroundColor()
+      ctx.fillStyle = bgColor
       ctx.fillRect(0, 0, w, h)
-      // grid configuration: fine and major (every 5 fine lines)
+      
+      const gridColors = this.getGridColors()
       const fine = 8
       const majorEvery = 5
-      // fine grid (dark red/magenta, very subtle)
-      ctx.strokeStyle = 'rgba(120,50,80,0.35)'
+      
+      ctx.strokeStyle = gridColors.fine
       ctx.lineWidth = 0.5
       for (let x = 0; x < w; x += fine) {
         ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); ctx.stroke()
@@ -174,8 +226,8 @@ export default {
       for (let y = 0; y < h; y += fine) {
         ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke()
       }
-      // major grid lines (darker red, more visible)
-      ctx.strokeStyle = 'rgba(140,60,90,0.5)'
+      
+      ctx.strokeStyle = gridColors.major
       ctx.lineWidth = 0.8
       const major = fine * majorEvery
       for (let x = 0; x < w; x += major) {
@@ -189,18 +241,16 @@ export default {
       const ctx = this.ctx
       const w = this.width
       const h = this.height
-      // draw cached grid first (faster than redrawing)
       if (this.gridCanvas) ctx.drawImage(this.gridCanvas, 0, 0, this.gridCanvas.width, this.gridCanvas.height, 0, 0, w * this.dpr, h * this.dpr)
-      // draw waveform centered vertically
+      
       ctx.save()
       ctx.translate(0, h / 2)
-      // reduce vertical scale to make peaks less tall and visually denser
       const scaleY = h * 0.14
       const len = this.pattern.length
-      // horizontal scaling: samples per pixel so pattern fills width proportionally
       const scaleX = w > 0 ? len / w : 1
       
-      // draw waveform with light blue/cyan color and glow effect
+      const waveColor = this.getWaveColor()
+      
       ctx.beginPath()
       for (let x = 0; x < w; x++) {
         const idx = Math.floor((this.offset + x * scaleX) % len)
@@ -210,16 +260,14 @@ export default {
         else ctx.lineTo(x, y)
       }
       
-      // add glow effect for the waveform
-      ctx.shadowColor = 'rgba(135,206,250,0.6)'
+      ctx.shadowColor = waveColor.glow
       ctx.shadowBlur = 4
       ctx.lineWidth = 2.5
-      ctx.strokeStyle = '#87CEFA'
+      ctx.strokeStyle = waveColor.main
       ctx.lineJoin = 'round'
       ctx.lineCap = 'round'
       ctx.stroke()
       
-      // overlay a thinner, brighter stroke for the core line
       ctx.shadowBlur = 0
       ctx.beginPath()
       for (let x = 0; x < w; x++) {
@@ -230,16 +278,41 @@ export default {
         else ctx.lineTo(x, y)
       }
       ctx.lineWidth = 1.2
-      ctx.strokeStyle = '#b3e0ff'
+      ctx.strokeStyle = waveColor.bright
       ctx.stroke()
       
       ctx.restore()
+      
+      // 更新显示的数值
+      if (this.ecgSettings.showData) {
+        const idx = Math.floor(this.offset % len)
+        this.currentVoltage = (this.pattern[idx] * 1.2).toFixed(2)
+      }
+    },
+    updateDisplay() {
+      if (this.gridCanvas) {
+        this.createGridCanvas()
+      }
+    },
+    exportData() {
+      if (this.csvValues && this.csvValues.length > 0) {
+        const csvContent = '时间(秒),II导联电压(mV)\n' + 
+          this.csvValues.map((v, i) => `${(i * 0.008).toFixed(3)},${v}`).join('\n')
+        const blob = new Blob([csvContent], { type: 'text/csv' })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'ecg-data.csv'
+        a.click()
+        window.URL.revokeObjectURL(url)
+      }
     },
     // generate synthetic ECG-like pattern: create a single beat then tile to length
     generateECGPattern(length) {
       const out = new Float32Array(length)
       // target heart rate
-      const hr = 65 + Math.floor(Math.random() * 10) // 65-74 bpm
+      const hr = 65 + Math.floor(Math.random() * 10)
+      this.heartRate = hr
       const beatsPerMinute = hr
       const secondsPerBeat = 60 / beatsPerMinute
       // assume sample density ~ 250 samples per second
@@ -281,6 +354,20 @@ export default {
 <style scoped>
 .ecg-card { padding:18px; display:flex; flex-direction:column; gap:12px; min-height:420px; }
 .ecg-title { font-size:1.2rem; color:#dfe8ff; font-weight:600; }
-.ecg-plot { flex:1; background: linear-gradient(180deg, rgba(10,18,35,0.12), rgba(5,10,20,0.06)); border-radius:12px; padding:12px; display:flex; align-items:center; }
+.ecg-plot { flex:1; background: linear-gradient(180deg, rgba(10,18,35,0.12), rgba(5,10,20,0.06)); border-radius:12px; padding:12px; display:flex; align-items:center; position: relative; }
 .ecg-canvas { width:100%; height:100%; border-radius:8px; display:block }
+.ecg-data-display {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: #4ecdc4;
+  font-size: 0.9rem;
+  font-family: monospace;
+}
+.data-item {
+  margin: 4px 0;
+}
 </style>
