@@ -1,50 +1,77 @@
 <template>
   <div class="device-card glass-card">
     <div class="device-header">
-      <h3 class="device-title">智能设备</h3>
+      <div class="header-left">
+        <h3 class="device-title">
+          <span class="title-icon">🔌</span>
+          智能设备
+        </h3>
+        <div class="title-decoration"></div>
+      </div>
       <div class="device-summary">
-        <span class="summary-item">
-          <span class="dot green-dot"></span>
-          在线: {{ onlineCount }}
-        </span>
-        <span class="summary-item">
-          <span class="dot red-dot"></span>
-          离线: {{ offlineCount }}
-        </span>
+        <div class="summary-item online">
+          <span class="status-dot pulse"></span>
+          <span class="summary-label">在线</span>
+          <span class="summary-value">{{ onlineCount }}</span>
+        </div>
+        <div class="summary-item offline">
+          <span class="status-dot"></span>
+          <span class="summary-label">离线</span>
+          <span class="summary-value">{{ offlineCount }}</span>
+        </div>
       </div>
     </div>
 
     <div class="device-list">
       <!-- 应急呼救类 -->
-      <div class="device-category">
-        <h4 class="category-title">🚨 应急呼救类</h4>
+      <div class="device-category emergency">
+        <h4 class="category-title">
+          <span class="category-icon">🚨</span>
+          应急呼救类
+        </h4>
         
-        <!-- 壁挂式一键呼救设备 -->
         <div class="device-item" v-for="device in emergencyDevices" :key="device.id">
-          <div class="device-info">
-            <div class="device-name">{{ device.name }}</div>
-            <div class="device-desc">{{ device.description }}</div>
-            <div class="device-location">📍 {{ device.location }}</div>
+          <div class="device-main">
+            <div class="device-info">
+              <div class="device-name">{{ device.name }}</div>
+              <div class="device-desc">{{ device.description }}</div>
+              <div class="device-location">
+                <span class="location-icon">📍</span>
+                {{ device.location }}
+              </div>
+            </div>
           </div>
           <div class="device-status" :class="device.status">
-            <span class="status-icon">{{ device.status === 'online' ? '✓' : '✕' }}</span>
+            <div class="status-indicator">
+              <span class="status-icon">{{ device.status === 'online' ? '✓' : '✕' }}</span>
+            </div>
             <span class="status-text">{{ device.status === 'online' ? '正常运行' : '异常' }}</span>
           </div>
         </div>
       </div>
 
       <!-- 风险监测类 -->
-      <div class="device-category">
-        <h4 class="category-title">⚠️ 风险监测类</h4>
+      <div class="device-category monitoring">
+        <h4 class="category-title">
+          <span class="category-icon">⚠️</span>
+          风险监测类
+        </h4>
         
         <div class="device-item" v-for="device in monitoringDevices" :key="device.id">
-          <div class="device-info">
-            <div class="device-name">{{ device.name }}</div>
-            <div class="device-desc">{{ device.description }}</div>
-            <div class="device-location">📍 {{ device.location }}</div>
+          <div class="device-main">
+            <div class="device-info">
+              <div class="device-name">{{ device.name }}</div>
+              <div class="device-desc">{{ device.description }}</div>
+              <div class="device-location">
+                <span class="location-icon">📍</span>
+                {{ device.location }}
+              </div>
+            </div>
           </div>
           <div class="device-status" :class="device.status">
-            <span class="status-icon">{{ device.status === 'online' ? '✓' : '✕' }}</span>
+            <div class="status-indicator">
+              <span class="status-icon">{{ device.status === 'online' ? '✓' : '✕' }}</span>
+            </div>
             <span class="status-text">{{ device.status === 'online' ? '正常运行' : '异常' }}</span>
           </div>
         </div>
@@ -109,39 +136,49 @@ export default {
 
 <style scoped>
 .device-card {
-  padding: 25px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  padding: 28px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
+/* ===== 头部区域 ===== */
 .device-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 15px;
+  align-items: flex-start;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.device-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0;
-  position: relative;
+.header-left {
+  flex: 1;
 }
 
-.device-title::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 40px;
+.device-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-icon {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+.title-decoration {
+  width: 60px;
   height: 3px;
   background: linear-gradient(90deg, #5ee0b0, #26de81);
   border-radius: 2px;
@@ -149,148 +186,220 @@ export default {
 
 .device-summary {
   display: flex;
-  gap: 15px;
+  gap: 20px;
 }
 
 .summary-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.3s ease;
+}
+
+.summary-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+.summary-item.online {
+  border-color: rgba(46, 204, 113, 0.2);
+}
+
+.summary-item.offline {
+  border-color: rgba(231, 76, 60, 0.2);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff7b72;
+  box-shadow: 0 0 8px rgba(255, 123, 114, 0.5);
+}
+
+.status-dot.pulse {
+  background: #5ee0b0;
+  box-shadow: 0 0 8px rgba(94, 224, 176, 0.5);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+.summary-label {
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #cbd5e6;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.summary-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.green-dot {
-  background: #5ee0b0;
-  box-shadow: 0 0 6px rgba(94, 224, 176, 0.5);
-}
-
-.red-dot {
-  background: #ff7b72;
-  box-shadow: 0 0 6px rgba(255, 123, 114, 0.5);
-}
-
+/* ===== 设备列表 ===== */
 .device-list {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 28px;
 }
 
 .device-category {
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 15px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.device-category:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.device-category.emergency {
+  border-left: 4px solid rgba(255, 107, 107, 0.5);
+}
+
+.device-category.monitoring {
+  border-left: 4px solid rgba(59, 110, 255, 0.5);
 }
 
 .category-title {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.category-title::before {
-  content: '';
-  width: 4px;
-  height: 20px;
-  background: linear-gradient(180deg, #3b6eff, #8b5cf6);
-  border-radius: 2px;
+.category-icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .device-item {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
-  transition: all 0.3s ease;
+  gap: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .device-item:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(59, 110, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateX(6px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.device-main {
+  flex: 1;
 }
 
 .device-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .device-name {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #eef2ff;
+  letter-spacing: 0.3px;
 }
 
 .device-desc {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: #9fb4ff;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .device-location {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: #6c86a3;
   margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.location-icon {
+  font-size: 0.9rem;
 }
 
 .device-status {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  min-width: 100px;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  min-width: 110px;
+  transition: all 0.3s ease;
 }
 
 .device-status.online {
-  background: rgba(46, 204, 113, 0.15);
+  background: rgba(46, 204, 113, 0.12);
   border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .device-status.offline {
-  background: rgba(231, 76, 60, 0.15);
+  background: rgba(231, 76, 60, 0.12);
   border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
+.status-indicator {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .status-icon {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: bold;
 }
 
 .device-status.online .status-icon {
   color: #2ecc71;
+  text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
 }
 
 .device-status.offline .status-icon {
   color: #e74c3c;
+  text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
 }
 
 .status-text {
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .device-status.online .status-text {
@@ -301,7 +410,7 @@ export default {
   color: #e74c3c;
 }
 
-/* Responsive design */
+/* 响应式设计 */
 @media (max-width: 768px) {
   .device-card {
     padding: 20px;
@@ -309,8 +418,7 @@ export default {
 
   .device-header {
     flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
+    gap: 16px;
   }
 
   .device-summary {
@@ -320,11 +428,7 @@ export default {
 
   .device-item {
     flex-direction: column;
-    gap: 12px;
-  }
-
-  .device-info {
-    margin-right: 0;
+    gap: 16px;
   }
 
   .device-status {
