@@ -102,90 +102,127 @@ export default {
 
 <style scoped>
 .settings-panel {
-  padding: 32px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 110, 255, 0.1));
-  border-radius: 24px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
   color: #eef2ff;
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  position: relative;
-  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
-.settings-panel::before {
+
+.settings-panel h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+  position: relative;
+}
+
+.settings-panel h3::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #3b6eff, #8b5cf6);
+  border-radius: 2px;
 }
-.settings-panel:hover::before {
-  opacity: 1;
-}
-.settings-panel h3 {
-  margin: 0 0 24px 0;
-  color: #dfe8ff;
-  font-size: 1.4rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+
 .setting-item {
   margin-bottom: 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
+  gap: 15px;
+  padding: 15px;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
-  border: 1px solid rgba(72, 120, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
 }
+
 .setting-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(72, 120, 255, 0.3);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(59, 110, 255, 0.2);
+  transform: translateY(-2px);
 }
+
 .setting-item label {
-  min-width: 140px;
-  color: #9fb4ff;
+  min-width: 130px;
+  color: #cbd5e6;
   font-weight: 600;
   font-size: 0.9rem;
 }
+
 .setting-item input {
   flex: 1;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(72, 120, 255, 0.3);
+  padding: 10px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  color: #eef2ff;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
   font-size: 0.9rem;
-  outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
 }
+
 .setting-item input:focus {
+  outline: none;
   border-color: #3b6eff;
-  background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 0 3px rgba(59, 110, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
 }
+
 .setting-item button {
   padding: 10px 20px;
-  background: linear-gradient(135deg, #3b6eff, #5b8eff);
+  background: linear-gradient(135deg, #3b6eff, #5c7cfa);
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
   font-weight: 600;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(59, 110, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(59, 110, 255, 0.3);
 }
+
 .setting-item button:hover {
-  background: linear-gradient(135deg, #4b7eff, #6b9eff);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(59, 110, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 110, 255, 0.4);
+}
+
+.setting-item span {
+  color: #a8c7ff;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 10px 15px;
+  background: rgba(59, 110, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(59, 110, 255, 0.2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .settings-panel {
+    padding: 20px;
+  }
+
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .setting-item label {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .setting-item input,
+  .setting-item span {
+    width: 100%;
+  }
 }
 </style>

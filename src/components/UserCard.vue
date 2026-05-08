@@ -185,105 +185,87 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(4px);
 }
 
 .dialog-content {
   background: linear-gradient(145deg, #0f1528 0%, #0a0f1e 100%);
-  border: 1px solid rgba(72, 120, 255, 0.4);
-  border-radius: 24px;
-  padding: 32px;
+  border: 1px solid rgba(72, 120, 255, 0.3);
+  border-radius: 20px;
+  padding: 24px;
   width: 90%;
-  max-width: 480px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 110, 255, 0.1);
-  animation: dialogSlideIn 0.3s ease-out;
-}
-
-@keyframes dialogSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  max-width: 450px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .dialog-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dialog-header h3 {
   color: #dfe8ff;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .close-btn {
-  background: rgba(255, 255, 255, 0.05);
+  background: none;
   border: none;
   color: #9fb4ff;
   font-size: 1.8rem;
   cursor: pointer;
-  padding: 8px;
-  width: 40px;
-  height: 40px;
+  padding: 0;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: all 0.3s ease;
+  transition: 0.2s;
 }
 
 .close-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  transform: rotate(90deg);
 }
 
 .dialog-body {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
   display: block;
   color: #9fb4ff;
-  font-size: 0.95rem;
-  margin-bottom: 10px;
-  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
 }
 
 .form-input,
 .form-textarea,
 .form-select {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 12px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(72, 120, 255, 0.3);
-  border-radius: 12px;
+  border-radius: 8px;
   color: #eef2ff;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   outline: none;
-  transition: all 0.3s ease;
-  font-family: inherit;
+  transition: 0.2s;
 }
 
 .form-input:focus,
@@ -291,49 +273,44 @@ export default {
 .form-select:focus {
   border-color: #3b6eff;
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(59, 110, 255, 0.1);
 }
 
 .form-textarea {
   resize: vertical;
-  min-height: 80px;
+  font-family: inherit;
 }
 
 .checkbox-group label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
-  color: #9fb4ff;
-  font-size: 0.9rem;
 }
 
 .checkbox-group input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
-  accent-color: #3b6eff;
 }
 
 .dialog-footer {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   justify-content: flex-end;
-  padding-top: 20px;
+  padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-cancel,
 .btn-confirm,
 .btn-export {
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: 0.2s;
   border: none;
-  min-width: 80px;
 }
 
 .btn-cancel {
@@ -344,31 +321,24 @@ export default {
 
 .btn-cancel:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
 }
 
 .btn-confirm {
   background: linear-gradient(135deg, #3b6eff, #5b8eff);
   color: white;
-  box-shadow: 0 4px 12px rgba(59, 110, 255, 0.3);
 }
 
 .btn-confirm:hover {
   background: linear-gradient(135deg, #4b7eff, #6b9eff);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(59, 110, 255, 0.4);
 }
 
 .btn-export {
-  background: linear-gradient(135deg, #4ecdc4, #44a08d);
-  color: #fff;
+  background: rgba(78, 205, 196, 0.2);
+  color: #4ecdc4;
   border: 1px solid rgba(78, 205, 196, 0.4);
-  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
 }
 
 .btn-export:hover {
-  background: linear-gradient(135deg, #5ed5cc, #54b0a0);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(78, 205, 196, 0.3);
+  background: rgba(78, 205, 196, 0.3);
 }
 </style>

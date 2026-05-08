@@ -3,7 +3,6 @@
     <div class="brand-overview" role="button" tabindex="0" @click="$emit('select','brand')" :class="{active: selected === 'brand'}">
       <div class="brand-logo">安芯居</div>
       <div class="brand-name">安芯居 · 家庭守护</div>
-      <div class="brand-sub">设备/状态总览</div>
     </div>
 
     <div class="top-buttons">
@@ -40,43 +39,49 @@ export default {
 
 <style scoped>
 .sidebar {
-  width: 140px;
+  width: 160px;
   min-height: 600px;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  gap: 16px;
-  background: linear-gradient(180deg, rgba(18, 25, 45, 0.8), rgba(8, 14, 26, 0.8));
+  padding: 20px 15px;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
-  border: 1px solid rgba(72, 120, 255, 0.2);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
+
 .click-item {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .click-item:hover {
   transform: translateY(-3px);
 }
+
 .brand-overview {
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-.brand-overview.active,
-.click-item.active {
-  box-shadow: 0 8px 24px rgba(59, 110, 255, 0.15);
-  border: 1px solid rgba(59, 110, 255, 0.2);
-  background: linear-gradient(135deg, rgba(59, 110, 255, 0.1), rgba(139, 92, 246, 0.1));
-}
-.brand-overview {
-  padding: 12px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: center;
   text-align: center;
-  border-radius: 16px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
 }
+
+.brand-overview:hover,
+.click-item.active {
+  box-shadow: 0 8px 25px rgba(59, 110, 255, 0.15);
+  border: 1px solid rgba(59, 110, 255, 0.2);
+  background: rgba(59, 110, 255, 0.1);
+}
+
 .brand-logo {
   width: 60px;
   height: 60px;
@@ -88,32 +93,54 @@ export default {
   color: white;
   font-weight: 700;
   font-size: 1.2rem;
-  box-shadow: 0 6px 16px rgba(59, 110, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(59, 110, 255, 0.3);
 }
+
 .brand-name {
   font-size: 0.9rem;
   color: #eaf0ff;
   font-weight: 600;
 }
+
 .brand-sub {
   font-size: 0.75rem;
   color: #96a9d6;
 }
+
 .top-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
 }
+
 .spacer {
   flex: 1 1 auto;
 }
+
+.bottom-area {
+  margin-top: auto;
+}
+
 .setting-btn {
   width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(72, 120, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #cddcff;
+  cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
 }
+
 .setting-btn:hover {
+  background: rgba(72, 120, 255, 0.15);
+  border-color: #3b6eff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(59, 110, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(59, 110, 255, 0.2);
 }
 
 /* 智能设备按钮样式 */
@@ -123,36 +150,22 @@ export default {
   font-size: 1rem;
   font-weight: 600;
   color: #cddcff;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   transition: all 0.3s ease;
-  border: 1px solid rgba(72, 120, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* reuse existing outline button style */
-.btn-outline {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(72, 120, 255, 0.2);
-  border-radius: 12px;
-  padding: 10px 8px;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #cddcff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
+.sidebar-device-btn:hover {
+  background: rgba(59, 110, 255, 0.1);
+  border-color: rgba(59, 110, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .glass-card {
-  background: rgba(18, 25, 45, 0.75);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  border: 1px solid rgba(72, 120, 255, 0.15);
+  background: rgba(18, 25, 45, 0.65);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  border: 1px solid rgba(72, 120, 255, 0.06);
 }
-
-.setting-btn:hover {
-  background: linear-gradient(135deg, rgba(72, 120, 255, 0.2), rgba(139, 92, 246, 0.2));
-  border-color: rgba(72, 120, 255, 0.4);
-}
-
 </style>
