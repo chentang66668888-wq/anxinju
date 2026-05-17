@@ -1,31 +1,36 @@
 <template>
   <div id="app">
     <AnxLogin v-if="!isLoggedIn" @login-success="handleLoginSuccess" />
-    <AdminPage v-else :currentUser="currentUser" @logout="handleLogout" />
+    <AdminPage v-else-if="isLoggedIn && isAdmin" :currentUser="currentUser" @logout="handleLogout" />
+    <Dashboard v-else :currentUser="currentUser" @logout="handleLogout" />
   </div>
 </template>
 
 <script>
 import AnxLogin from './components/Login.vue'
 import AdminPage from './components/AdminPage.vue'
+import Dashboard from './components/Dashboard.vue'
 
 export default {
   name: 'App',
-  components: { AnxLogin, AdminPage },
+  components: { AnxLogin, AdminPage, Dashboard },
   data() {
     return {
       isLoggedIn: false,
-      currentUser: ''
+      currentUser: '',
+      isAdmin: false
     }
   },
   created() {
     this.isLoggedIn = localStorage.getItem('anxju_logged_in') === 'true'
     this.currentUser = localStorage.getItem('anxju_current_user') || ''
+    this.isAdmin = localStorage.getItem('anxju_is_admin') === 'true'
   },
   methods: {
     handleLoginSuccess(payload) {
       this.isLoggedIn = true
       this.currentUser = payload?.username || localStorage.getItem('anxju_current_user') || ''
+      this.isAdmin = payload?.isAdmin || false
     },
     handleLogout() {
       localStorage.removeItem('anxju_logged_in')
@@ -33,6 +38,7 @@ export default {
       localStorage.removeItem('anxju_is_admin')
       this.isLoggedIn = false
       this.currentUser = ''
+      this.isAdmin = false
     }
   }
 }

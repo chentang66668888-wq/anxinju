@@ -12,7 +12,6 @@
         <div class="module-panel" v-if="selectedModule && selectedModule !== 'info'">
           <div class="module-wrapper glass-card">
             <SmartDevices v-if="selectedModule === 'devices'" />
-            <BrandOverview v-if="selectedModule === 'brand'" />
             <div v-if="selectedModule === 'settings'" class="settings-full">
               <Settings />
             </div>
@@ -55,12 +54,11 @@ import StatusBar from './StatusBar.vue'
 import AnxECG from './AnxECG.vue'
 import AnxRouteMap from './AnxRouteMap.vue'
 import SmartDevices from './SmartDevices.vue'
-import BrandOverview from './BrandOverview.vue'
 import Settings from './Settings.vue'
 
 export default {
   name: 'AnxDashboard',
-  components: { Sidebar, TopStats, UserCard, StatusBar, AnxECG, AnxRouteMap, SmartDevices, BrandOverview, Settings },
+  components: { Sidebar, TopStats, UserCard, StatusBar, AnxECG, AnxRouteMap, SmartDevices, Settings },
   props: {
     currentUser: {
       type: String,

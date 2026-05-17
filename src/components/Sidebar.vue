@@ -1,22 +1,5 @@
 <template>
   <aside class="sidebar glass-card">
-    <!-- 品牌概览 -->
-    <div 
-      class="brand-overview" 
-      role="button" 
-      tabindex="0" 
-      @click="$emit('select','brand')" 
-      :class="{active: selected === 'brand'}"
-    >
-      <div class="brand-logo">
-        <span class="logo-icon">🏠</span>
-      </div>
-      <div class="brand-info">
-        <div class="brand-name">安芯居</div>
-        <div class="brand-subtitle">家庭守护系统</div>
-      </div>
-    </div>
-
     <!-- 顶部功能按钮 -->
     <div class="top-buttons">
       <div 
@@ -82,95 +65,6 @@ export default {
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-/* ===== 品牌概览区域 ===== */
-.brand-overview {
-  cursor: pointer;
-  padding: 20px 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.brand-overview::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(59, 110, 255, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.brand-overview:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(59, 110, 255, 0.25);
-  border-color: rgba(59, 110, 255, 0.3);
-}
-
-.brand-overview:hover::before {
-  opacity: 1;
-}
-
-.brand-overview.active {
-  background: linear-gradient(135deg, rgba(59, 110, 255, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
-  border: 1px solid rgba(59, 110, 255, 0.5);
-  box-shadow: 
-    0 8px 24px rgba(59, 110, 255, 0.3),
-    inset 0 0 20px rgba(59, 110, 255, 0.1);
-}
-
-.brand-overview.active::before {
-  opacity: 1;
-}
-
-.brand-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #3b6eff 0%, #8b5cf6 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  box-shadow: 0 4px 12px rgba(59, 110, 255, 0.4);
-  position: relative;
-  z-index: 1;
-  transition: all 0.3s ease;
-}
-
-.brand-overview:hover .brand-logo {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(59, 110, 255, 0.5);
-}
-
-.brand-info {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-
-.brand-name {
-  font-size: 1rem;
-  color: #ffffff;
-  font-weight: 700;
-  margin-bottom: 4px;
-  letter-spacing: 0.5px;
-}
-
-.brand-subtitle {
-  font-size: 0.7rem;
-  color: rgba(234, 240, 255, 0.7);
-  font-weight: 500;
 }
 
 /* ===== 导航按钮区域 ===== */
