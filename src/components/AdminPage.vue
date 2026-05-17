@@ -7,12 +7,16 @@
           <div class="logo-ring"></div>
         </div>
         <div>
-          <p class="subtitle">安芯居家庭守护系统</p>
           <h1>管理员控制台</h1>
-          <p class="description">集中展示家庭守护系统报警、健康趋势与用户推送消息。</p>
         </div>
       </div>
       <button class="btn-logout" @click="handleLogout">退出登录</button>
+    </div>
+
+    <div class="brand-slogan">
+      <h2 class="slogan-title">安芯居</h2>
+      <p class="slogan-text">让独居老人的家成为最安全的港湾</p>
+      <div class="slogan-divider"></div>
     </div>
 
     <div class="overview-grid">
@@ -405,23 +409,10 @@ export default {
   border-radius: 20px;
 }
 
-.subtitle {
-  color: #8db7ff;
-  font-size: 0.95rem;
-  margin-bottom: 8px;
-}
-
 .admin-head h1 {
   font-size: 2rem;
   color: #f7faff;
-  margin-bottom: 8px;
-}
-
-.description {
-  color: #c9d6ff;
-  opacity: 0.92;
-  max-width: 640px;
-  line-height: 1.7;
+  margin: 0;
 }
 
 .btn-logout {
@@ -439,6 +430,35 @@ export default {
   background: rgba(255, 123, 114, 0.32);
   color: #fff;
   transform: translateY(-1px);
+}
+
+.brand-slogan {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.slogan-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #eef2ff;
+  margin: 0 0 8px 0;
+  letter-spacing: 2px;
+}
+
+.slogan-text {
+  font-size: 1rem;
+  color: #b9c8ff;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.slogan-divider {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  margin: 12px auto 0;
+  border-radius: 2px;
 }
 
 .overview-grid {

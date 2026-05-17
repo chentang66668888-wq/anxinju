@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <div class="logout-bar">
-      <span class="user-info">👤 {{ currentUserData }}</span>
+      <span class="user-info"> {{ currentUserData }}</span>
       <button class="btn-logout" @click="handleLogout">退出登录</button>
     </div>
     
