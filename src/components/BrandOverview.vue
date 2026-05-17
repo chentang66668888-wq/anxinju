@@ -1,6 +1,6 @@
 <template>
   <div class="brand-overview-panel">
-    <div class="overview-header">安芯居已经做到了以下几点</div>
+    <div class="overview-header">安芯居 ——让独居老人的家成为最安全的港湾</div>
     <div class="overview-body">
       <div class="left-grid">
       <div class="stat-card" v-for="(item, idx) in stats" :key="idx">
