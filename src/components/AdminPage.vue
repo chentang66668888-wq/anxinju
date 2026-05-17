@@ -92,7 +92,7 @@
         <div class="log-scroll" ref="logScroll">
           <div class="log-list">
             <div
-              v-for="(log, index) in logs"
+              v-for="(log, index) in currentLogs"
               :key="index"
               :ref="'logItems'"
               :class="['log-entry', { active: index === logCurrentIndex }]">
@@ -102,15 +102,7 @@
           </div>
         </div>
 
-        <div class="log-dots">
-          <span
-            v-for="(log, index) in logs"
-            :key="index"
-            class="dot"
-            :class="{ active: index === logCurrentIndex }"
-            @click="setCurrentLog(index)">
-          </span>
-        </div>
+        
       </section>
     </div>
   </div>
@@ -201,20 +193,15 @@ export default {
           time: '11:25:12'
         }
       ],
+      // 保留少量通用日志作为回退，但主要日志按用户生成在 logsByUser
       logs: [
         { time: '14:25:00', text: '如厕 夜间第2次如厕，时长正常' },
-        { time: '14:20:44', text: '安全 摔倒风险未触发，姿态稳定' },
-        { time: '14:15:32', text: '空气质量 PM2.5瞬时值42，建议开启净化' },
-        { time: '14:38:12', text: '心率异常分析：夜间恢复指数偏低' },
-        { time: '14:36:47', text: '路径图 偏离卧室-卫生间常规动线，已预警' },
-        { time: '14:34:02', text: '空气质量传感器 自动联动新风系统，已执行' },
-        { time: '14:33:20', text: '心电图设备 更新导联灵敏度，重新校准' },
-        { time: '14:30:10', text: '环境监测 厨房温度异常，已调整空调模式。' },
-        { time: '14:28:55', text: '门禁 玄关门锁已自动复位，当前状态安全。' },
-        { time: '14:26:41', text: '药物提醒 李爷爷已按时服药，系统记录完成。' },
-        { time: '14:22:18', text: '异常活动 卧室门频繁开启，建议检查是否需要帮助。' },
-        { time: '14:18:05', text: '健康监测 体温略高，已提醒管理员关注。' }
+        { time: '14:20:44', text: '安全 摔倒风险未触发，姿态稳定' }
       ],
+      // 每个用户的系统调度实况（自动生成的模拟数据）
+      logsByUser: {},
+      // 当前正在展示的用户日志列表（随消息切换而切换）
+      currentLogs: [],
       intervalId: null
     }
   },
@@ -223,15 +210,18 @@ export default {
       return this.messages[this.currentIndex] || this.messages[0]
     },
     currentLog() {
-      return this.logs[this.logCurrentIndex] || this.logs[0]
+      return this.currentLogs[this.logCurrentIndex] || this.currentLogs[0] || this.logs[0]
     }
   },
   mounted() {
     this.intervalId = setInterval(() => {
       this.nextMessage()
-      this.nextLog()
     }, 4500)
     this.$nextTick(() => {
+      // 生成每个用户的模拟日志
+      this.buildLogsForUsers()
+      // 初始同步为第一个消息对应的用户
+      this.syncLogsToCurrentUser()
       this.scrollActiveMessage()
       this.scrollActiveLog()
     })
@@ -247,19 +237,94 @@ export default {
     },
     nextMessage() {
       this.currentIndex = (this.currentIndex + 1) % this.messages.length
-      this.$nextTick(this.scrollActiveMessage)
+      this.$nextTick(() => {
+        this.syncLogsToCurrentUser()
+        this.scrollActiveMessage()
+      })
     },
     nextLog() {
-      this.logCurrentIndex = (this.logCurrentIndex + 1) % this.logs.length
-      this.$nextTick(this.scrollActiveLog)
+      // 保持方法兼容，但日志不再自动循环播放
+      return
     },
     setCurrentMessage(index) {
       this.currentIndex = index
-      this.$nextTick(this.scrollActiveMessage)
+      this.$nextTick(() => {
+        this.syncLogsToCurrentUser()
+        this.scrollActiveMessage()
+      })
     },
     setCurrentLog(index) {
       this.logCurrentIndex = index
       this.$nextTick(this.scrollActiveLog)
+    },
+    // 根据 messages 里的用户，生成每个用户独立的模拟日志
+    buildLogsForUsers() {
+      // 为每个用户生成从当天 00:00 到该消息时间的时间序列日志（每 5 分钟一条）
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = today.getMonth()
+      const date = today.getDate()
+      this.logsByUser = {}
+      this.messages.forEach((msg) => {
+        const userKey = (msg.user || '未知').split('·')[0].trim()
+        const sample = []
+        // 解析消息时间，格式假定为 HH:MM:SS
+        const parts = (msg.time || '00:00:00').split(':')
+        const msgHours = parseInt(parts[0] || '0', 10)
+        const msgMinutes = parseInt(parts[1] || '0', 10)
+        const endTs = new Date(year, month, date, msgHours, msgMinutes, 0)
+        // 从 00:00 开始，每 5 分钟一条，直到消息时间（包含）
+        const startTs = new Date(year, month, date, 0, 0, 0)
+        const intervalMinutes = 5
+        let idx = 0
+        for (let t = startTs.getTime(); t <= endTs.getTime(); t += intervalMinutes * 60 * 1000) {
+          const ts = new Date(t)
+          const hh = String(ts.getHours()).padStart(2, '0')
+          const mm = String(ts.getMinutes()).padStart(2, '0')
+          sample.push({
+            time: `${hh}:${mm}`,
+            text: this.generateLogTextForUser(userKey, idx)
+          })
+          idx++
+        }
+        // 如果生成的数据太少，补充到至少 12 条，保持展示稳定
+        while (sample.length < 12) {
+          const last = sample[sample.length - 1]
+          const lastParts = last.time.split(':')
+          let h = parseInt(lastParts[0], 10)
+          let m = parseInt(lastParts[1], 10) + 5
+          if (m >= 60) { m -= 60; h = (h + 1) % 24 }
+          const hh = String(h).padStart(2, '0')
+          const mm = String(m).padStart(2, '0')
+          sample.push({ time: `${hh}:${mm}`, text: this.generateLogTextForUser(userKey, idx) })
+          idx++
+        }
+        this.logsByUser[userKey] = sample
+      })
+    },
+    // 将当前日志数组切换为当前消息所属用户的日志
+    syncLogsToCurrentUser() {
+      const msg = this.messages[this.currentIndex] || {}
+      const userKey = (msg.user || '未知').split('·')[0].trim()
+      this.currentLogs = this.logsByUser[userKey] || this.logs
+      this.logCurrentIndex = 0
+    },
+    generateLogTextForUser(userKey, idx) {
+      const templates = [
+        `${userKey}：活动正常，未发现异常。`,
+        `${userKey}：检测到夜间移动，记录已保存。`,
+        `${userKey}：心率波动，建议关注。`,
+        `${userKey}：环境空气质量良好。`,
+        `${userKey}：传感器自动校准完成。`,
+        `${userKey}：门禁状态正常，已上锁。`,
+        `${userKey}：按时服药记录已同步。`,
+        `${userKey}：建议安排志愿者短期随访。`,
+        `${userKey}：烟雾传感器无异常。`,
+        `${userKey}：跌倒风险模型评分稳定。`,
+        `${userKey}：位移轨迹偏离常规，已预警。`,
+        `${userKey}：设备电量正常。`
+      ]
+      return templates[idx % templates.length]
     },
     scrollActiveMessage() {
       const items = this.$refs.messageItems
