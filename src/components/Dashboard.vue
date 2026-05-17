@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <div class="logout-bar">
-      <span class="user-info">👤 {{ currentUser }}</span>
+      <span class="user-info">👤 {{ currentUserData }}</span>
       <button class="btn-logout" @click="handleLogout">退出登录</button>
     </div>
     
@@ -61,6 +61,12 @@ import Settings from './Settings.vue'
 export default {
   name: 'AnxDashboard',
   components: { Sidebar, TopStats, UserCard, StatusBar, AnxECG, AnxRouteMap, SmartDevices, BrandOverview, Settings },
+  props: {
+    currentUser: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return { 
       selectedModule: 'info',
@@ -80,7 +86,7 @@ export default {
         age: 78,
         healthCondition: '高血压、轻度认知障碍、夜间需关注如厕'
       },
-      currentUser: localStorage.getItem('anxju_current_user') || '用户'
+      currentUserData: this.currentUser || localStorage.getItem('anxju_current_user') || '用户'
     }
   },
   methods: {

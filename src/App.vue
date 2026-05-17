@@ -1,33 +1,38 @@
 <template>
   <div id="app">
     <AnxLogin v-if="!isLoggedIn" @login-success="handleLoginSuccess" />
-    <Dashboard v-else @logout="handleLogout" />
+    <AdminPage v-else :currentUser="currentUser" @logout="handleLogout" />
   </div>
 </template>
 
 <script>
 import AnxLogin from './components/Login.vue'
-import Dashboard from './components/Dashboard.vue'
+import AdminPage from './components/AdminPage.vue'
 
 export default {
   name: 'App',
-  components: { AnxLogin, Dashboard },
+  components: { AnxLogin, AdminPage },
   data() {
     return {
-      isLoggedIn: false
+      isLoggedIn: false,
+      currentUser: ''
     }
   },
   created() {
-    // 检查登录状态
-    const loggedIn = localStorage.getItem('anxju_logged_in')
-    this.isLoggedIn = loggedIn === 'true'
+    this.isLoggedIn = localStorage.getItem('anxju_logged_in') === 'true'
+    this.currentUser = localStorage.getItem('anxju_current_user') || ''
   },
   methods: {
-    handleLoginSuccess() {
+    handleLoginSuccess(payload) {
       this.isLoggedIn = true
+      this.currentUser = payload?.username || localStorage.getItem('anxju_current_user') || ''
     },
     handleLogout() {
+      localStorage.removeItem('anxju_logged_in')
+      localStorage.removeItem('anxju_current_user')
+      localStorage.removeItem('anxju_is_admin')
       this.isLoggedIn = false
+      this.currentUser = ''
     }
   }
 }

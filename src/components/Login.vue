@@ -155,6 +155,7 @@ export default {
       },
       // 模拟用户数据库（本地数组）
       users: [
+        { username: 'gly', password: '123456' },
         { username: 'admin', password: 'admin123' },
         { username: 'test', password: 'test123' }
       ]
@@ -166,11 +167,21 @@ export default {
     if (savedUsers) {
       this.users = JSON.parse(savedUsers)
     }
+
+    // 确保管理员账户始终存在
+    const adminUser = { username: 'gly', password: '123456' }
+    if (!this.users.some(u => u.username === adminUser.username)) {
+      this.users.unshift(adminUser)
+      localStorage.setItem('anxju_users', JSON.stringify(this.users))
+    }
     
     // 检查是否已经登录
     const isLoggedIn = localStorage.getItem('anxju_logged_in')
     if (isLoggedIn === 'true') {
-      this.$emit('login-success')
+      this.$emit('login-success', {
+        username: localStorage.getItem('anxju_current_user') || '',
+        isAdmin: localStorage.getItem('anxju_is_admin') === 'true'
+      })
     }
   },
   methods: {
@@ -194,7 +205,9 @@ export default {
         // 登录成功
         localStorage.setItem('anxju_logged_in', 'true')
         localStorage.setItem('anxju_current_user', this.loginForm.username)
-        this.$emit('login-success')
+        const isAdmin = this.loginForm.username === 'gly'
+        localStorage.setItem('anxju_is_admin', isAdmin ? 'true' : 'false')
+        this.$emit('login-success', { username: this.loginForm.username, isAdmin })
       } else {
         this.errorMessage = '用户名或密码错误，请重试'
       }
