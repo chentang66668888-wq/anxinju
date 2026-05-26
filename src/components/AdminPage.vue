@@ -59,7 +59,6 @@
         <div class="panel-header">
           <div>
             <h2>实时消息推送</h2>
-            <p>系统预置 10 条老年人关怀消息，按条轮换显示，确保每条推送都能被及时查看。</p>
           </div>
           <span class="status-tag">最新消息</span>
         </div>
@@ -70,7 +69,10 @@
               v-for="(message, index) in messages"
               :key="index"
               :ref="'messageItems'"
-              :class="['message-item', { active: index === currentIndex }]">
+              :class="['message-item', { active: index === currentIndex }]"
+              role="button"
+              tabindex="0"
+              @click="setCurrentMessage(index)">
               <div class="message-top">
                 <div class="message-type" :class="message.typeClass">{{ message.title }}</div>
                 <div class="message-time">{{ message.time }}</div>
@@ -536,6 +538,14 @@ export default {
   background: rgba(8, 18, 40, 0.78);
   border: 1px solid rgba(94, 150, 255, 0.16);
   border-radius: 22px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.message-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(79, 157, 255, 0.44);
+  background: rgba(15, 24, 50, 0.92);
 }
 
 .message-scroll,

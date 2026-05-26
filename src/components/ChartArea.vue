@@ -41,7 +41,7 @@ export default {
       })
 
       this.radarChart.setOption({
-        radar: { indicator:[{ name:'摔倒风险', max:100 },{ name:'夜间如厕频率', max:100 },{ name:'心电图异常趋势', max:100 },{ name:'空气质量影响指数', max:100 },{ name:'路径偏离日常', max:100 }], shape:'circle', center:['50%','50%'], radius:'68%', name:{ textStyle:{ color:'#b9d0ff', fontSize:10 } }, splitArea:{ areaStyle:{ color:['rgba(59,110,255,0.1)','rgba(35,75,155,0.2)'] } }, axisLine:{ lineStyle:{ color:'#2a4270' } } },
+        radar: { indicator:[{ name:'摔倒风险', max:100 },{ name:'夜间如厕频率', max:100 },{ name:'心率图异常趋势', max:100 },{ name:'空气质量影响指数', max:100 },{ name:'路径偏离日常', max:100 }], shape:'circle', center:['50%','50%'], radius:'68%', name:{ textStyle:{ color:'#b9d0ff', fontSize:10 } }, splitArea:{ areaStyle:{ color:['rgba(59,110,255,0.1)','rgba(35,75,155,0.2)'] } }, axisLine:{ lineStyle:{ color:'#2a4270' } } },
         series: [{ type:'radar', data:[{ value:[68,72,55,45,63], name:'当前长者风险' }], areaStyle:{ color:'rgba(59,110,255,0.3)' }, lineStyle:{ width:2, color:'#6d9eff' }, itemStyle:{ color:'#ffb347' } }],
         tooltip: { trigger: 'item' }, backgroundColor: 'transparent'
       })
